@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
@@ -29,12 +28,20 @@ func Ping(w http.ResponseWriter, r *http.Request) {
 		"acc-gateway01.us-east-1.dev.shared.aws.tidbcloud.com",
 	}
 	results := pingEndpoints(context.Background(), ep)
-	b, err := json.Marshal(results)
-	if err != nil {
-		fmt.Fprintln(w, err.Error())
-	} else {
-		fmt.Fprintf(w, string(b))
+
+	fmt.Fprintf(w, printlnPingResult(results))
+}
+
+func printlnPingResult(results []pingResult) string {
+	var result string
+	for _, r := range results {
+		if r.err == nil {
+			result += fmt.Sprint("%s\t%s\t%s\n", r.key, r.d, "nil")
+		} else {
+			result += fmt.Sprint("%s\t%s\t%s\n", r.key, r.d, r.err)
+		}
 	}
+	return result
 }
 
 func pingEndpoints(ctx context.Context, eps []string) []pingResult {
