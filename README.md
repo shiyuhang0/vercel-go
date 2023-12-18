@@ -1,4 +1,4 @@
-# template-go-vercel
+yarn install# template-go-vercel
 
 [![](/public/cover.jpg)](https://template-go-api.vercel.app/)
 
