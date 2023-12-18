@@ -36,9 +36,9 @@ func printlnPingResult(results []pingResult) string {
 	var result string
 	for _, r := range results {
 		if r.err == nil {
-			result += fmt.Sprint("%s\t%s\t%s\n", r.key, r.d, "nil")
+			result += fmt.Sprint("%s %s %s \n", r.key, r.d, "nil")
 		} else {
-			result += fmt.Sprint("%s\t%s\t%s\n", r.key, r.d, r.err)
+			result += fmt.Sprint("%s %s %s\n", r.key, r.d, r.err)
 		}
 	}
 	return result
