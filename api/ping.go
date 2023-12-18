@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"net/http"
 	"net/netip"
 	"sync"
 	"time"
@@ -21,24 +22,26 @@ type pingResult struct {
 	err error
 }
 
-func main() {
+func Ping(w http.ResponseWriter, r *http.Request) {
 	ep := []string{
 		"gateway01.us-east-1.dev.shared.aws.tidbcloud.com",
 		"acc-gateway01.us-east-1.dev.shared.aws.tidbcloud.com",
 	}
 	results := pingEndpoints(context.Background(), ep)
-	printlnPingResult(results)
+	fmt.Fprintf(w, printlnPingResult(results))
 }
 
-func printlnPingResult(results []pingResult) {
-	fmt.Printf("%-40s\t%-40s\t%s\n", "ENDPOINT", "LATENCY", "ERROR")
+func printlnPingResult(results []pingResult) string {
+	var result string
+	result = fmt.Sprint("%-40s\t%-40s\t%s\n", "ENDPOINT", "LATENCY", "ERROR")
 	for _, r := range results {
 		if r.err == nil {
-			fmt.Printf("%-40s\t%-40s\t%s\n", r.key, r.d, "nil")
+			result += fmt.Sprint("%-40s\t%-40s\t%s\n", r.key, r.d, "nil")
 		} else {
-			fmt.Printf("%-40s\t%-40s\t%s\n", r.key, r.d, r.err)
+			result += fmt.Sprint("%-40s\t%-40s\t%s\n", r.key, r.d, r.err)
 		}
 	}
+	return result
 }
 
 func pingEndpoints(ctx context.Context, eps []string) []pingResult {
